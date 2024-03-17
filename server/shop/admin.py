@@ -11,8 +11,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name','in_stock','price','category','sub_category','likes']
-    list_editable = ['price','likes','in_stock']
+    list_display = ['name','inventory','price','category','sub_category','likes']
+    list_editable = ['price','likes','inventory']
     list_filter = ['category','sub_category']
     list_per_page = 20
     search_fields = ['name']
