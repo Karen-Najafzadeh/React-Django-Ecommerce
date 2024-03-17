@@ -8,7 +8,7 @@ from django.core.validators import MinValueValidator
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='profiles/image', null=True, blank=True)
-    favorites = models.ManyToManyField('Product', blank=True, null=True)
+    favorites = models.ManyToManyField('Product', blank=True)
 
 
     def __str__(self):
