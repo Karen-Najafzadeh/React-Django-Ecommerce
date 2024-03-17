@@ -11,11 +11,20 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name','price','category','sub_category','likes']
+    list_display = ['name','price','category','sub_category','likes','stocks']
     list_editable = ['price','likes']
     list_filter = ['category','sub_category']
     list_per_page = 20
     search_fields = ['name']
+
+    def stocks(self,product):
+        if product.inventory == 0:
+            return 'sold out'
+        elif product.inventory <= 10:
+            return f'only {product.inventory} left'
+        else:
+            return 'in stock'
+
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
