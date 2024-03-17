@@ -9,6 +9,7 @@ class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='profiles/image', null=True, blank=True)
     favorites = models.ManyToManyField('Product', blank=True)
+    address = models.CharField(max_length=150, null=True, blank=True)
 
 
     def __str__(self):
@@ -33,14 +34,6 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    PRODUCT_STATUS_IN_STOCK = 'I'
-    PRODUCT_STATUS_SOLD_OUT = 'O'
-
-    PRODUCT_STATUS_CHOICES = [
-        (PRODUCT_STATUS_IN_STOCK, 'In Stock'),
-        (PRODUCT_STATUS_SOLD_OUT, 'Sold Out')
-    ]
-
     SUB_CATEGORY_BAG = 'B'
     SUB_CATEGORY_SHOE = 'S'
     SUB_CATEGORY_CLOTH = 'C'
@@ -73,7 +66,19 @@ class Product(models.Model):
 
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    product = models.ManyToManyField(Product)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(
+        Cart, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1)]
+    )
+
+    
 
 
 
@@ -81,3 +86,4 @@ class Comment(models.Model):
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     message = models.TextField()
+    date = models.DateField(auto_now_add=True)
