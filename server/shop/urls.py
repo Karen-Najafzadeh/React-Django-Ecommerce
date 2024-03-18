@@ -8,9 +8,6 @@ router.register('products',views.ProductView, basename='all_products')
 router.register('cart',views.ShoppingCart, basename='my_shopping_carts')
 router.register('profile',views.ProfileView, basename='my_profile')
 
-
-
-
 urlpatterns =[
     path('',include(router.urls)),
 

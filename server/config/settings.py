@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core.apps.CoreConfig',
     'shop.apps.ShopConfig',
+    'django_filters',
     'rest_framework',
     'djoser',
 ]

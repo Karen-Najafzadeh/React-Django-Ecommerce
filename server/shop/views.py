@@ -2,7 +2,10 @@ from rest_framework.generics import *
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import api_view, action
 from rest_framework.response  import Response
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from shop.serializers import *
+from shop import filters
 from shop import models
 
 class Home(mixins.ListModelMixin,
@@ -13,9 +16,13 @@ class Home(mixins.ListModelMixin,
     serializer_class = ProductSerializer
 
 class ProductView(mixins.ListModelMixin,
-           viewsets.GenericViewSet):
+                  mixins.RetrieveModelMixin,
+                  viewsets.GenericViewSet):
     """a view to get all the products in the shop"""
 
+    filter_backends = [DjangoFilterBackend,SearchFilter]
+    search_fields = ['name']
+    filterset_class = filters.ProductFilter
     queryset = models.Product.objects.all()
     serializer_class = ProductSerializer
 
