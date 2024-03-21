@@ -34,10 +34,10 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    SUB_CATEGORY_BAG = 'B'
-    SUB_CATEGORY_SHOE = 'S'
-    SUB_CATEGORY_CLOTH = 'C'
-    SUB_CATEGORY_PANTS = 'P'
+    SUB_CATEGORY_BAG = 'Bag'
+    SUB_CATEGORY_SHOE = 'Shoes'
+    SUB_CATEGORY_CLOTH = 'Cloths'
+    SUB_CATEGORY_PANTS = 'Pants'
 
     SUB_CATEGORY_CHOICES = [
         (SUB_CATEGORY_CLOTH, 'Cloths'),
@@ -53,10 +53,10 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     sub_category = models.CharField(
-        max_length=1, choices=SUB_CATEGORY_CHOICES
+        max_length=6, choices=SUB_CATEGORY_CHOICES
     )
-    image = models.ImageField(upload_to='products/image')
-    likes = models.PositiveIntegerField()
+    image = models.ImageField(upload_to='products/image', null=True, blank=True)
+    likes = models.PositiveIntegerField(null=True, blank=True)
 
 
     def __str__(self):

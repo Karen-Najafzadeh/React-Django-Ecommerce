@@ -3,10 +3,13 @@ from rest_framework import viewsets, mixins
 from rest_framework.decorators import api_view, action
 from rest_framework.response  import Response
 from rest_framework.filters import SearchFilter
+from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from shop.serializers import *
 from shop import filters
 from shop import models
+
+
 
 class Home(mixins.ListModelMixin,
            viewsets.GenericViewSet):
@@ -14,6 +17,8 @@ class Home(mixins.ListModelMixin,
 
     queryset = models.Product.objects.all()
     serializer_class = ProductSerializer
+
+
 
 class ProductView(mixins.ListModelMixin,
                   mixins.RetrieveModelMixin,
@@ -27,6 +32,8 @@ class ProductView(mixins.ListModelMixin,
     serializer_class = ProductSerializer
 
 
+
+
 class ShoppingCart(viewsets.ModelViewSet):
     """a view to manipulate shopping carts"""
     def get_queryset(self):
@@ -36,9 +43,11 @@ class ShoppingCart(viewsets.ModelViewSet):
             return queryset
     serializer_class = ShoppingCartSerializer
 
-# class ProfileView(viewsets.ModelViewSet):
 
-class ProfileView(viewsets.ViewSet):
+
+
+class ProfileView(viewsets.ViewSet):    
+
     """A view to show the user their profile"""
     def list(self,*args, **kwargs):
         if self.request.user.is_authenticated:
@@ -50,22 +59,17 @@ class ProfileView(viewsets.ViewSet):
             return Response('sorry you are not authenticated, log in to your account to see your profile')
     
 
-    def update(self, request, pk=None):
-        # pk is the primary key of the user whose profile is being updated
-        # request.data contains the updated profile data
+    @action(detail=False, methods=['GET', 'PUT', 'PATCH'], name='Update Profile', permission_classes=[IsAuthenticated])
+    def update_profile(self, request):
+        profile = models.Profile.objects.get(user_id=request.user.id)
 
-        # Retrieve the user profile to update
-        if self.request.user.is_authenticated:
-            user = self.request.user.id
-            user_profile = models.Profile.objects.get(user_id=user)
+        if request.method == 'GET':
+            serializer = ProfileSerializer(profile)
+            return Response(serializer.data)
 
-        # Update the user profile with the data from the request
-        user_profile_data = request.data
-        print(user_profile_data)
-        # user_profile.some_field = user_profile_data.get('some_field', user_profile.some_field)
-        # Update other fields as needed
-
-        # Save the updated user profile
-        # user_profile.save()
-
-        return Response({'message': 'User profile updated successfully'})
+        elif request.method == 'PUT' or 'PATCH':
+            serializer = ProfileSerializer(profile, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+    
